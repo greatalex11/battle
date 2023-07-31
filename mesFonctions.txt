@@ -1,0 +1,7 @@
+gestion id session
+
+gestion des variables de la session
+
+gestion du submit
+
+definition des scenarii

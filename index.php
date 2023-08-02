@@ -13,6 +13,8 @@ $counter = $_SESSION["counter"] ?? null;
 $pertes = $_SESSION["Pertes"] ?? null;
 $looser = $_SESSION["looserName"] ?? null;
 
+$byeBye = $_SESSION['close'];
+
 ?>
 
 
@@ -29,10 +31,14 @@ $looser = $_SESSION["looserName"] ?? null;
 
     <h1 class="animate__animated animate__rubberBand ">Battle</h1>
 
+    <?php if ($byeBye == true) { ?>
+        <p> alert(<? echo $byeBye ?>)</p>
+    <?php } ?>
+
     <audio id="fight-song" src="fight.mp3"></audio>
 
     <form id='formFight' action="#" method="post">
-        <?php if ($counter != null) { ?>
+        <?php if ($counter != null || $byeBye != true) { ?>
             <input type="submit" name="start" value="continuer la partie">
         <?php } else { ?>
             <input type="submit" name="start" value="commencer la partie">

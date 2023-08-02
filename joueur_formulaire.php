@@ -7,6 +7,7 @@ $player = $_SESSION["player"] ?? null;
 $adversaire  = $_SESSION["adversaire"] ?? null;
 $counter  = $_SESSION["counter"] ?? 1;
 
+
 ?>
 
 
@@ -98,7 +99,7 @@ $counter  = $_SESSION["counter"] ?? 1;
                      <ul>
                         <li>Nom : <?php echo $player["name"] ?> <input type="hidden" value='<?php echo $player["name"] ?>' name="player[name]"></li>
                         <li>Attaque : <input type="number" name="player[attaque]" value="40" name="player[attaque]" min="10" step="10" max="40"></li>
-                        <li>Mana : <input type="number" name="player[mana]" value="<?php echo $_SESSION["player"]["mana"] ?>" min="50" step="50" max="300"></li>
+                        <li>Mana : <input type="number" name="player[mana]" value="<?php echo $_SESSION["player"]["mana"] ?>" min="0" step="50" max="300"></li>
 
                         <li>Berret : <select name="player[berret]" class="mh-10">
                               <option value="vert">vert</option>
@@ -117,7 +118,7 @@ $counter  = $_SESSION["counter"] ?? 1;
                      <ul>
                         <li>Nom : <?php echo $adversaire["name"] ?> <input type="hidden" value='<?php echo $adversaire["name"] ?>' name="adversaire[name]"></li>
                         <li>Attaque : <input type="number" name="adversaire[attaque]" value="40" min="10" step="10" max="40"></li>
-                        <li>Mana : <input type="number" name="adversaire[mana]" value="<?php echo $_SESSION["adversaire"]["mana"] ?>" min="50" step="50" max="300"></li>
+                        <li>Mana : <input type="number" name="adversaire[mana]" value="<?php echo $_SESSION["adversaire"]["mana"] ?>" min="0" step="50" max="300"></li>
 
                         <li>Berret : <select name="adversaire[berret]">
                               <option value="vert">vert</option>

@@ -4,52 +4,75 @@ require('session_header.php');
 
 $_SESSION['player'] = $_POST['player'] ?? [];
 $_SESSION['adversaire'] = $_POST['adversaire'] ?? [];
+$_SESSION['counter'] = ($_SESSION['counter'] ?? 1) + 1;
 
-dump($_SESSION);
+$_SESSION['Pertes'];
+
+$_SESSION['looserName'];
+
+
 
 function calculAttack(array $player, array $adversaire): array
 {
-
    $produitPlayer = $_SESSION['player']['attaque'] * $_SESSION['player']['mana'] * $_SESSION['player']['sante'];
    $produitAdversaire = $_SESSION['adversaire']['attaque'] * $_SESSION['adversaire']['mana'] * $_SESSION['adversaire']['sante'];
 
    return ["produitPlayer" => $produitPlayer, "produitAdversaire" => $produitAdversaire];
 }
+$resultat = calculAttack($_SESSION['player'], $_SESSION['adversaire']);
 
 
-function analyseAttack(int $adversaire, int $player): string
+function analyseAttack(array $resultat)
 {
+   if ($resultat['produitPlayer'] > $resultat['produitAdversaire']) {
+
+      $verdict  = "player gagnant";
+      $_SESSION["winnerName"] = $_SESSION['player']['name'];
+      $_SESSION["looserName"] =  $_SESSION['adversaire']['name'];
+   } elseif ($resultat['produitPlayer'] == $resultat['produitAdversaire']) {
+
+      $verdict = "match null";
+   } else {
+      $verdict = "adversaire gagnant ";
+      $_SESSION["winnerName"] = $_SESSION['adversaire']['name'];
+      $_SESSION["looserName"] =  $_SESSION['player']['name'];
+   };
+
+   return $verdict;
+};
+
+$verdict = analyseAttack($resultat);
 
 
 
-   /*if (($_SESSION['adversaire']['mana']) < ($_SESSION['player']['mana'])) 
-   {
-       echo 'the winer is' . $_SESSION['adversaire']['name'];
-   }else{
-      echo ($_SESSION['player']['name']) . "loose";
+function affichageResult($verdict)
+{
+   if ($verdict !== "") {
+      $_SESSION["verdict"] = $verdict;
+      header("location:index.php");
    }
-   $resut= return "winn or loose";
-   */
 };
 
+affichageResult($verdict);
 
-
-function affichageResult($result)
+function rules($resultat, $verdict)
 {
-   "affiche pannel loose or win + resultat + bande son";
-};
+   $deltaPoint = abs($resultat['produitPlayer'] - $resultat['produitAdversaire']);
+   $deltaPoint = substr($deltaPoint, 0, 2);
+   $_SESSION["Pertes"] = $deltaPoint;
 
+   if ($verdict = "adversaire gagnant") {
 
-function gestionDesSoins($form): int
-{
-   $_SESSION['player']['sante'];
-   $_SESSION['player']['mana'];
-   $_SESSION['adversaire']['sante'];
-   $_SESSION['adversaire']['mana'];
-};
+      $_SESSION['pertePlayer'] = ['player', $deltaPoint];
+      $_SESSION['player']['mana'] = $_SESSION['player']['mana'] - $deltaPoint;
+   } elseif ($verdict = "player gagnant") {
 
-?>
+      $_SESSION['perteadversaire'] = ['adversaire', $deltaPoint];
+      $_SESSION['adversaire']['mana'] = $_SESSION['adversaire']['mana'] - $deltaPoint;
+   }
+   var_dump($_SESSION['adversaire']['mana']);
 
-<script>
-   let sante = <?php echo $_SESSION['adversaire']['sante'] ?>;
-</script>
+   return $deltaPoint;
+}
+$mafonction = rules($resultat, $verdict);
+dump($mafonction);

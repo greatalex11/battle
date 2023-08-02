@@ -1,5 +1,12 @@
 <?php
+require_once __DIR__ . '/vendor/autoload.php';
 require('session_header.php');
+dump($_POST);
+
+$player = $_SESSION["player"] ?? null;
+$adversaire  = $_SESSION["adversaire"] ?? null;
+$counter  = $_SESSION["counter"] ?? 1;
+
 ?>
 
 
@@ -21,80 +28,112 @@ require('session_header.php');
       <audio id="fight-song" src="fight.mp3"></audio>
       <audio id="hadoudken-song" src="Haduken.mp3"></audio>
       <audio id="fatality-song" src="fatality.mp3"></audio>
-      <h1 class="animate__animated animate__rubberBand">Battle</h1>
-      <div id="prematch">
+      <h1 class="animate__animated animate__rubberBand">Battle #<?php echo $counter; ?></h1>
+      <?php if (!$player || !$adversaire) { ?>
+         <div id="prematch">
+            <form id='formFight' action="session_dataBattle.php" method="post">
+               <div>
+                  Joueur <br>
+                  <div class="row">
+                     <div class="col-6">
+                        <label class="form-label">Name</label>
+                        <input required type="text" class="form-control" name="player[name]" maxlength="20">
 
-         <div class="col-6 ">
-            <div class="position-relative float-end">
-               <img id="player" src="https://api.dicebear.com/6.x/lorelei/svg?flip=false&seed=test" alt="Avatar" class="avatar float-end">
-               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-
-               </span>
-
-            </div>
-         </div>
-
-         <form id='formFight' action="session_dataBattle.php" method="post">
-            <div>
-               Joueur <br>
-               <div class="row">
-                  <div class="col-6">
-                     <label class="form-label">Name</label>
-                     <input required type="text" class="form-control" name="player[name]" maxlength="20">
-
-                  </div>
-                  <div class=" col-6">
-                     <label class="form-label">Attaque</label>
-                     <input required type="number" class="form-control" value="100" name="player[attaque]" min="10" step="10" max="40">
-                  </div>
-                  <div class="col-6">
-                     <label class="form-label">Mana</label>
-                     <input required type="number" class="form-control" value="100" name="player[mana]" min="50" step="50" max="300">
-                  </div>
-                  <div class="col-6">
-                     <label class="form-label">Santé</label>
-                     <input required type="number" class="form-control" value="100" name="player[sante]" min="10" step="5" max="100">
+                     </div>
+                     <div class=" col-6">
+                        <label class="form-label">Attaque</label>
+                        <input required type="number" class="form-control" value="40" name="player[attaque]" min="10" step="10" max="40">
+                     </div>
+                     <div class="col-6">
+                        <label class="form-label">Mana</label>
+                        <input required type="number" class="form-control" value="100" name="player[mana]" min="50" step="50" max="300">
+                     </div>
+                     <div class="col-6">
+                        <label class="form-label">Santé</label>
+                        <input required type="number" class="form-control" value="100" name="player[sante]" min="10" step="5" max="100">
+                     </div>
                   </div>
                </div>
-            </div>
-            <hr>
-            <div>
-               Adversaire <br>
-               <div class="row">
-
-                  <div class="col-6">
-                     <label class="form-label">Name</label>
-                     <input required type="text" class="form-control" name="adversaire[name]" maxlength="20">
+               <hr>
+               <div>
+                  Adversaire <br>
+                  <div class="row">
+                     <div class="col-6">
+                        <label class="form-label">Name</label>
+                        <input required type="text" class="form-control" name="adversaire[name]" maxlength="20">
+                     </div>
+                     <div class="col-6">
+                        <label class="form-label">Attaque</label>
+                        <input required type="number" class="form-control" value="40" name="adversaire[attaque]" min="10" step="10" max="40">
+                     </div>
+                     <div class="col-6">
+                        <label class="form-label">Mana</label>
+                        <input required type="number" class="form-control" value="100" name="adversaire[mana]" min="50" step="50" max="300">
+                     </div>
+                     <div class="col-6">
+                        <label class="form-label">Santé</label>
+                        <input required type="number" class="form-control" value="100" name="adversaire[sante]" min="10" step="5" max="100">
+                     </div>
                   </div>
+               </div>
+               <div class="row mt-2">
+                  <div class="d-flex justify-content-center">
+                     <input id="fight" type="submit" name="fight" value="FIGHT">
+                  </div>
+               </div>
+            </form>
+         </div>
+      <?php } else { ?>
+         <div id="match">
+            <form action="session_dataBattle.php" method="post">
+               <div class="row">
+                  <div class="col-6">
+                     <div class="position-relative float-end">
+                        <img id="player" src="https://api.dicebear.com/6.x/lorelei/svg?flip=false&seed=test" alt="Avatar" class="avatar float-end">
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                           <?php echo $player["sante"] ?>
+                           <input type="hidden" value='<?php echo $player["sante"] ?>' name="player[sante]">
+                        </span>
+                     </div>
+                     <ul>
+                        <li>Nom : <?php echo $player["name"] ?> <input type="hidden" value='<?php echo $player["name"] ?>' name="player[name]"></li>
+                        <li>Attaque : <input type="number" name="player[attaque]" value="40" name="player[attaque]" min="10" step="10" max="40"></li>
+                        <li>Mana : <input type="number" name="player[mana]" value="<?php echo $_SESSION["player"]["mana"] ?>" min="50" step="50" max="300"></li>
 
+                        <li>Berret : <select name="player[berret]" class="mh-10">
+                              <option value="vert">vert</option>
+                              <option value="noir">noir</option>
+                           </select>
+                     </ul>
+                  </div>
                   <div class="col-6" id="adversaire">
                      <div class="position-relative float-start">
                         <img src="https://api.dicebear.com/6.x/lorelei/svg?flip=true&seed=test2" alt="Avatar" class="avatar">
                         <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger">
+                           <?php echo $adversaire["sante"] ?>
+                           <input type="hidden" value='<?php echo $adversaire["sante"] ?>' name="adversaire[sante]">
+                        </span>
                      </div>
-                  </div>
-                  <div class="col-6">
-                     <label class="form-label">Attaque</label>
-                     <input required type="number" class="form-control" value="100" name="adversaire[attaque]" min="10" step="10" max="40">
-                  </div>
-                  <div class="col-6">
-                     <label class="form-label">Mana</label>
-                     <input required type="number" class="form-control" value="100" name="adversaire[mana]" min="50" step="50" max="300">
-                  </div>
-                  <div class="col-6">
-                     <label class="form-label">Santé</label>
-                     <input required type="number" class="form-control" value="100" name="adversaire[sante]" min="10" step="5" max="100">
-                  </div>
-               </div>
-            </div>
-            <div class="row mt-2">
-               <div class="d-flex justify-content-center">
-                  <input id="fight" type="submit" value="FIGHT">
-               </div>
-            </div>
-         </form>
+                     <ul>
+                        <li>Nom : <?php echo $adversaire["name"] ?> <input type="hidden" value='<?php echo $adversaire["name"] ?>' name="adversaire[name]"></li>
+                        <li>Attaque : <input type="number" name="adversaire[attaque]" value="40" min="10" step="10" max="40"></li>
+                        <li>Mana : <input type="number" name="adversaire[mana]" value="<?php echo $_SESSION["adversaire"]["mana"] ?>" min="50" step="50" max="300"></li>
 
-      </div>
+                        <li>Berret : <select name="adversaire[berret]">
+                              <option value="vert">vert</option>
+                              <option value="noir">noir</option>
+                           </select>
+                        </li>
+                     </ul>
+                  </div>
+               </div>
+               <input type="submit" value="param's changed -> fight">
+            </form>
+         </div>
+      <?php } ?>
+
+
+
 
       <script>
          document.addEventListener("DOMContentLoaded", function() {
